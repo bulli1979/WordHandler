@@ -5,6 +5,7 @@ public class ElementType {
 	private boolean checked;
 	private String text;
 	private int type;
+	
 	public ElementType(String name,boolean checked,String text,int type){
 		this.name = name;
 		this.checked = checked;
@@ -16,6 +17,12 @@ public class ElementType {
 	}
 	public boolean isChecked() {
 		return checked;
+	}
+	public String getText() {
+		return text;
+	}
+	public int getType() {
+		return type;
 	}
 	
 }
