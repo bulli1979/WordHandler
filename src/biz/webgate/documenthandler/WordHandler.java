@@ -42,7 +42,7 @@ public class WordHandler {
 	public List<ElementType> getCBs() {
 		List<ElementType> retList = new ArrayList<ElementType>();
 		try {
-		Finder finder = new Finder(Sym.class);
+			Finder finder = new Finder(Sym.class);
 			new TraversalUtil(documentPart.getContent(), finder);
 			for (Object obj : finder.results){
 				Sym sym = (Sym)obj;
@@ -69,9 +69,17 @@ public class WordHandler {
 	}
 	
 	private boolean chkBox(String code){
+		//checked		<w:sym w:font="Wingdings 2" w:char="F053"/>		evt. <w:sym w:font="Wingdings 2" w:char="F054"/>
+		//				in Word: Wingdings 2 > 83
+		//not checked:	<w:sym w:font="Wingdings 2" w:char="F0A3"/>		evt. <w:sym w:font="Wingdings" w:char="F0A8"/>
+		//				in Word: Wingdings 2 > 163
+		
+		//<w:sym w:font="Wingdings" w:char="F06F"/>
 		boolean checked = false;
-		if(code != null && code.equals("F054")){
+		if(code != null && (code.equals("F053") || code.equals("F054"))) {
 			checked = true;
+		} else if(!code.equals("F0A3") && !code.equals("F0A8")) {
+			System.out.println("Invalid code: " + code + " - Check Symbol in Word Document");
 		}
 		return checked;
 	} 

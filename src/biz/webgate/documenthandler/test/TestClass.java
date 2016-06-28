@@ -2,6 +2,9 @@ package biz.webgate.documenthandler.test;
 
 import java.util.List;
 
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.docx4j.Docx4jProperties;
 import org.junit.Test;
 
 import biz.webgate.documenthandler.ElementType;
@@ -9,17 +12,26 @@ import biz.webgate.documenthandler.WordHandler;
 public class TestClass {
 	@Test
 	public void testActiveXElement(){
-		String fileName = "C:\\SVGer\\F_Import\\al201500001_20151103_IMP_urteil.docm";
+		// disable DocX4j logging
+		Logger.getRootLogger().setLevel(Level.ERROR);
+		Docx4jProperties.getProperties().setProperty("docx4j.Log4j.Configurator.disabled", "true");
+				
+				
+		//String fileName = "C:\\SVGer\\F_Import\\YV201500002_20160607_IMP_URTEIL.docm";
+		String fileName = "C:\\SVGer\\F_Import\\UV201390001_20160614_IMP_BESCHLUSS.docm";
+		
 		
 		WordHandler handler = new WordHandler();
 		handler.read(fileName);
 		
 		List<ElementType> cbList = handler.getCBs();
+		
 		List<ElementType> tList = handler.getTextList();
 		tList.addAll(handler.getTextListNoBookmark());
 		
-		//System.out.println("CBoxes: " + cbList.size() + "  / TList: " + tList.size());
+		System.out.println("CBoxes: " + cbList.size() + "  / TList: " + tList.size());
 		
+		/*
 		String g_nr = handler.getTextValue(tList, "G_NR");
 		System.out.println("G_NR: " + g_nr);
 		String ahv = handler.getTextValue(tList, "AHV_NR");
@@ -61,5 +73,6 @@ public class TestClass {
 		System.out.println("boxGutheissung : " + isChecked);
 		isChecked = handler.isChecked(cbList, "boxAndere");
 		System.out.println("boxAndere : " + isChecked);
+		*/
 	}
 }
