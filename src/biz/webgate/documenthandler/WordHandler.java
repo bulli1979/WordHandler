@@ -1,7 +1,9 @@
 package biz.webgate.documenthandler;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.docx4j.TraversalUtil;
 import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
 import org.docx4j.openpackaging.parts.WordprocessingML.MainDocumentPart;
@@ -19,6 +21,11 @@ public class WordHandler {
 
 	private MainDocumentPart documentPart;
 	private boolean showSysOut = false;
+	private boolean debug = false;
+	
+	final static Logger LOG = Logger.getLogger(WordHandler.class);
+	
+	private String version = "20173011";
 	
 	public WordHandler() {
 		super();
@@ -27,15 +34,39 @@ public class WordHandler {
 	public void read() {
 		read("");
 	}
+	
+	public String getVersion() {
+		return version;
+	}
+
+	public boolean isDebug() {
+		return debug;
+	}
+	public void setDebug(boolean debug) {
+		this.debug = debug;
+	}
 
 	public void read(String fileName) {
+		ClassLoader cl = Thread.currentThread().getContextClassLoader();
 		try {
+			Thread.currentThread().setContextClassLoader(WordHandler.class.getClassLoader());
+			LOG.info("changed ClassLoader");
+			
+			if (debug) System.out.println("Start WordHandler Read");
+			
 			WordprocessingMLPackage wordMLPackage = WordprocessingMLPackage.load(new java.io.File(fileName));
 			this.documentPart = wordMLPackage.getMainDocumentPart();
-			//System.out.println(this.documentPart.getXML());
+			
+			if (debug) {
+				LOG.info("********************XML for " + fileName + ":");
+				LOG.info(this.documentPart.getXML());
+			}
 		} catch (Exception e) {
-			System.out.println("Error in WordHandler.read: " + e);
+			LOG.error(e);
 			e.printStackTrace();
+		} finally {
+			Thread.currentThread().setContextClassLoader(cl);
+			LOG.info("reset ClassLoader");
 		}
 	}
 	

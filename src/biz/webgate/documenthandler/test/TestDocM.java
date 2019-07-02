@@ -9,7 +9,7 @@ import org.junit.Test;
 
 import biz.webgate.documenthandler.ElementType;
 import biz.webgate.documenthandler.WordHandler;
-public class TestClass {
+public class TestDocM {
 	@Test
 	public void testActiveXElement(){
 		// disable DocX4j logging
@@ -18,7 +18,7 @@ public class TestClass {
 				
 				
 		//String fileName = "C:\\SVGer\\F_Import\\YV201500002_20160607_IMP_URTEIL.docm";
-		String fileName = "C:\\SVGer\\F_Import\\UV201390001_20160614_IMP_BESCHLUSS.docm";
+		String fileName = "C:\\SVGer\\F_Import\\mb199000100_20161206_imp_urteil.docm";
 		
 		
 		WordHandler handler = new WordHandler();
