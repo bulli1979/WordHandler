@@ -15,7 +15,7 @@ public class Finder extends CallbackImpl {
 
       public List<Object> results = new ArrayList<Object>(); 
 
-      public List<Object> apply(Object o) {
+      public List<Object> apply(Object o) {    	  
           if (o.getClass().equals(typeToFind)) {
               results.add(o);
           }

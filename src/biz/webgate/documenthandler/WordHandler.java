@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 import org.docx4j.TraversalUtil;
 import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
 import org.docx4j.openpackaging.parts.WordprocessingML.MainDocumentPart;
+import org.docx4j.w14.CTSdtCheckbox;
 import org.docx4j.wml.P;
 import org.docx4j.wml.R;
 import org.docx4j.wml.R.Sym;
@@ -70,28 +71,82 @@ public class WordHandler {
 		}
 	}
 	
+	
 	public List<ElementType> getCBs() {
 		List<ElementType> retList = new ArrayList<ElementType>();
+		
 		try {
+			Finder finderSdtRun = new Finder(SdtRun.class);
+			new TraversalUtil(this.documentPart.getContent(), finderSdtRun);
+			String tagName = "";
+			
+			for (Object obj : finderSdtRun.results) {
+				SdtRun stdRun = (SdtRun) obj;
+				SdtPr sdtPr = stdRun.getSdtPr();
+				if (sdtPr != null) {
+					tagName = sdtPr.getTag().getVal();
+					System.out.println("checking " + tagName);
+					
+					CTSdtCheckbox cbx = (CTSdtCheckbox) sdtPr.getByClass(CTSdtCheckbox.class);
+					if (cbx != null) {
+						System.out.println(tagName + " - getChecked: " + cbx.getChecked().getVal());
+						System.out.println(tagName + " - getCheckedState: " + cbx.getCheckedState().getVal());
+						System.out.println(tagName + " - getUncheckedState: " + cbx.getUncheckedState().getVal());
+												
+						if (cbx.getChecked().getVal() != null) {
+							if (cbx.getChecked().getVal().equals("1")) {
+								ElementType cb = new ElementType(tagName, true,"",0);
+								retList.add(cb);
+							} else if (cbx.getChecked().getVal().equals("0")) {
+								ElementType cb = new ElementType(tagName, false,"",0);
+								retList.add(cb);
+							}
+						} else {
+							System.out.println(tagName + " - getChecked().getVal() is NULL");
+						}
+					}
+				}
+			}
+			finderSdtRun = null;
+		} catch (Exception e) {
+			System.out.println("Error in WordHandler.getCBs: " + e);
+			e.printStackTrace();
+		}
+		
+		return retList;
+	}
+	
+	// To be removed
+	/*
+	public List<ElementType> getCBs_old() {
+		List<ElementType> retList = new ArrayList<ElementType>();
+		try {			
 			Finder finder = new Finder(Sym.class);
 			new TraversalUtil(documentPart.getContent(), finder);
 			for (Object obj : finder.results){
 				Sym sym = (Sym)obj;
-				boolean checked = chkBox(sym.getChar());
-				R parent1 = (R)sym.getParent();				
-				SdtRun parent2 = (SdtRun)parent1.getParent();
-				String name = getBoxName(parent2.getSdtPr());
+				System.out.println(sym.getChar() + " > " + sym.getFont());
 				
-				ElementType cb = new ElementType(name, checked,"",0);
-				retList.add(cb);
+				boolean checked = chkBox(sym.getChar());
+				R parent1 = (R)sym.getParent();
+				Object parent = parent1.getParent();
+				if (parent instanceof SdtRun) {
+					SdtRun parent2 = (SdtRun) parent;
+					String name = getBoxName(parent2.getSdtPr());
+					
+					ElementType cb = new ElementType(name, checked,"",0);
+					retList.add(cb);
+				}
 			}
 			finder = null;
 		} catch (Exception e) {
 			System.out.println("Error in WordHandler.getCBs: " + e);
 			e.printStackTrace();
 		}
+		
 		return retList;
 	}
+	*/
 	
 	
 	private String getBoxName(SdtPr pr){
@@ -99,6 +154,7 @@ public class WordHandler {
 		return t.getVal();
 	}
 	
+	/*
 	private boolean chkBox(String code){
 		//checked		<w:sym w:font="Wingdings 2" w:char="F053"/>		evt. <w:sym w:font="Wingdings 2" w:char="F054"/>
 		//				in Word: Wingdings 2 > 83
@@ -107,13 +163,14 @@ public class WordHandler {
 		
 		//<w:sym w:font="Wingdings" w:char="F06F"/>
 		boolean checked = false;
-		if(code != null && (code.equals("F053") || code.equals("F054"))) {
+		if(code != null && (code.equals("F053") || code.equals("0053") || code.equals("F054") || code.equals("0054"))) {
 			checked = true;
-		} else if(!code.equals("F0A3") && !code.equals("F0A8")) {
+		} else if(!code.equals("F0A3") && !code.equals("00A3") && !code.equals("F0A8") && !code.equals("00A8")) {
 			System.out.println("Invalid code: " + code + " - Check Symbol in Word Document");
 		}
 		return checked;
-	} 
+	}
+	*/ 
 	
 	public List<ElementType> getTextList(){
 		List<ElementType> retList = new ArrayList<ElementType>();

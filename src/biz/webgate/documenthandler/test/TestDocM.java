@@ -10,19 +10,17 @@ import org.junit.Test;
 import biz.webgate.documenthandler.ElementType;
 import biz.webgate.documenthandler.WordHandler;
 public class TestDocM {
-	@Test
+	// @Test
 	public void testActiveXElement(){
 		// disable DocX4j logging
 		Logger.getRootLogger().setLevel(Level.ERROR);
 		Docx4jProperties.getProperties().setProperty("docx4j.Log4j.Configurator.disabled", "true");
 				
 				
-		//String fileName = "C:\\SVGer\\F_Import\\YV201500002_20160607_IMP_URTEIL.docm";
+		// String fileName = "C:\\SVGer\\F_Import\\YV201500002_20160607_IMP_URTEIL.docm";
 		String fileName = "C:\\SVGer\\F_Import\\mb199000100_20161206_imp_urteil.docm";
 		
-		
 		WordHandler handler = new WordHandler();
-		handler.read(fileName);
 		
 		List<ElementType> cbList = handler.getCBs();
 		
@@ -74,5 +72,23 @@ public class TestDocM {
 		isChecked = handler.isChecked(cbList, "boxAndere");
 		System.out.println("boxAndere : " + isChecked);
 		*/
+	}
+	
+	@Test
+	public void testDocX() {
+		
+		String fileName = "C:\\Temp\\SVGer\\Beispiel richtig.docx";
+		fileName = "C:\\Temp\\SVGer\\Beispiel falsch.docx";
+		//fileName = "C:\\Temp\\SVGer\\Beispiel falsch_kurz.docx";
+		
+		WordHandler wh = new WordHandler();
+		wh.read(fileName);
+		
+		List<ElementType> cbList = wh.getCBs();
+		System.out.println(fileName + " - found " + cbList.size() + " Checkboxe(s)");
+		
+		//for (ElementType el : cbList) {
+		//	System.out.println(el.getName() + " >> " + el.isChecked());
+		//}
 	}
 }
